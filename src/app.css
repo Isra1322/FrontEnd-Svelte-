@@ -1,0 +1,144 @@
+:root {
+  --corporate-blue: #0d3b66;
+  --corporate-blue-hover: #092a4a;
+  --corporate-light-blue: #eef4f8;
+  --highlight-yellow: #ffe066;
+  --text-dark: #212529;
+  --border-color: #dee2e6;
+  --danger-color: #dc3545;
+  --danger-bg: #f8d7da;
+  --danger-text: #842029;
+  --success-color: #198754;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Highlight */
+mark.search-highlight {
+  background-color: #ffe066 !important;
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Custom Modal Backdrop with Blur */
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.custom-modal-dialog {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.custom-modal-dialog.modal-lg {
+  max-width: 900px;
+}
+
+.custom-modal-dialog.modal-xl {
+  max-width: 1100px;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.custom-modal-header {
+  background-color: var(--corporate-blue);
+  color: #ffffff;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.custom-modal-header .btn-close-custom {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.custom-modal-header .btn-close-custom:hover {
+  opacity: 1;
+}
+
+.custom-modal-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+
+.custom-modal-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  background-color: #fdfdfd;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Corporate Buttons */
+.btn-corporate {
+  background-color: var(--corporate-blue);
+  border-color: var(--corporate-blue);
+  color: #ffffff;
+}
+
+.btn-corporate:hover, .btn-corporate:focus {
+  background-color: var(--corporate-blue-hover);
+  border-color: var(--corporate-blue-hover);
+  color: #ffffff;
+}
+
+.text-corporate {
+  color: var(--corporate-blue) !important;
+}
+
+.bg-corporate {
+  background-color: var(--corporate-blue) !important;
+}
