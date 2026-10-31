@@ -1,43 +1,83 @@
-# Svelte + Vite
+# NorthWind Sales - Frontend en Svelte 5
 
-This template should help get you started developing with Svelte in Vite.
+Aplicación web cliente moderna desarrollada con **Svelte 5** y **Vite**, migrada desde Blazor WebAssembly. Proporciona una interfaz ágil, reactiva y desacoplada para la gestión comercial y facturación de NorthWind Sales, consumiendo una Web API REST alojada en Linux Debian.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## 🚀 Pila Tecnológica (Stack)
 
-## Need an official Svelte framework?
+- **Framework:** Svelte 5 (sintaxis de componentes nativos, runes y montaje con `mount()`).
+- **Empaquetador y Servidor Local:** Vite.
+- **Estilos:** Bootstrap 5 y CSS personalizado corporativo (`#0d3b66`).
+- **Cliente HTTP:** Axios (con interceptores para JWT).
+- **Gestión de Estado:** Svelte Stores reactivos (`$auth`, `$order`, `$navigation`).
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+---
 
-## Technical considerations
+## 🏛️ Arquitectura y Conexión al Backend
 
-**Why use this over SvelteKit?**
+- **Host de la API:** Debian Linux (entorno local o accesible mediante VPN/Tailscale).
+- **Cliente Axios centralizado (`src/services/api.js`):**
+  - `baseURL` parametrizable (ej. `http://100.126.173.43:5000` o IP local).
+  - Interceptor global que inyecta automáticamente el encabezado `Authorization: Bearer <accessToken>` extraído de `localStorage`.
+- **Seguridad y Persistencia (`src/stores/auth.js`):**
+  - Almacenamiento seguro del token JWT.
+  - Al ejecutar `logout`, limpia la sesión y restablece el estado temporal de órdenes y clientes en memoria para evitar residuos.
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+---
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+## 📋 Módulos y Reglas de Negocio Implementadas
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+### 🔐 Autenticación (Login & Registro)
+- Inputs con límites estrictos de 30 caracteres.
+- **Nombre y Apellido:** solo caracteres alfabéticos, sin espacios ni caracteres especiales, con autoformateo a *Title Case*.
+- **Correo electrónico:** sanitización en tiempo real, bloqueo de guiones consecutivos (`--`) y restricción de puntos posdominio.
 
-**Why include `.vscode/extensions.json`?**
+### 🛒 Crear Orden de Venta
+- **Formulario simétrico en 2 columnas:** Datos del Cliente (solo lectura) y Datos de Entrega.
+- **Validación de entrega:**
+  - Dirección: máx. 40 caracteres (solo letras, números, puntos y guiones simples).
+  - Ciudad y País: máx. 20 caracteres (solo letras).
+  - Código Postal: numérico de 6 dígitos.
+- **Bloqueo inmediato por Deuda:** Si el cliente posee deuda pendiente (> $0), se despliega alerta roja y se inhabilita el flujo de pedido.
+- **Botón "+ Agregar producto":** habilitado únicamente con cliente seleccionado sin deuda y código postal de 6 dígitos.
+- **Carrito y Productos:**
+  - Los productos agregados muestran estado *"Ya seleccionado"* en el modal de búsqueda.
+  - El campo cantidad bloquea ceros a la izquierda y valores `<= 0` (mínimo 1).
+  - Eliminación con modal de confirmación y fondo difuminado (*backdrop blur*).
+- **Finalización:** Envío a la API con visualización inmediata del comprobante PDF.
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+### 📄 Consultar Facturas
+- Tabla con paginación de 8 registros por página sin desbordamiento vertical.
+- **Filtros específicos:**
+  - **No. Factura:** máx. 10 números.
+  - **Cliente:** máx. 10 letras.
+  - **Fecha:** con máscara `DD/MM/YYYY`, validación de rangos `01-31`, `01-12`, `1901-2999` y bloqueo de fechas futuras.
+- Modal visor integrado para visualizar y descargar el PDF de la factura.
 
-**Why enable `checkJs` in the JS template?**
+---
 
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
+## 🛠️ Guía de Instalación y Ejecución
 
-**Why is HMR not preserving my local component state?**
+### Requisitos previos
+- Node.js (versión 18 o superior).
+- Backend NorthWind Web API en ejecución.
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
+### Pasos de instalación
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/Isra1322/FrontEnd-Svelte-.git
+cd FrontEnd-Svelte-
 
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+# 2. Instalar dependencias
+npm install
+
+# 3. Configurar endpoint del backend en src/services/api.js
+# Ajustar la IP según la máquina Debian / Tailscale:
+# baseURL: 'http://<IP_DEBIAN>:5000'
+
+# 4. Iniciar en entorno de desarrollo
+npm run dev
+# (En Windows PowerShell si hay bloqueo de scripts: npm.cmd run dev)
 ```
